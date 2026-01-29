@@ -1,0 +1,38 @@
+/d/prod/simple_optimization/src/convergence_checker.e:12:		require
+/d/prod/simple_optimization/src/convergence_checker.e:20:		require
+/d/prod/simple_optimization/src/convergence_checker.e:28:		require
+/d/prod/simple_optimization/src/gradient_descent_solver.e:28:		ensure
+/d/prod/simple_optimization/src/gradient_descent_solver.e:36:		ensure
+/d/prod/simple_optimization/src/gradient_descent_solver.e:44:		ensure
+/d/prod/simple_optimization/src/gradient_descent_solver.e:52:		ensure
+/d/prod/simple_optimization/src/gradient_descent_solver.e:73:		require
+/d/prod/simple_optimization/src/gradient_descent_solver.e:83:		ensure
+/d/prod/simple_optimization/src/gradient_vector.e:15:		require
+/d/prod/simple_optimization/src/gradient_vector.e:20:		ensure
+/d/prod/simple_optimization/src/gradient_vector.e:47:		ensure
+/d/prod/simple_optimization/src/gradient_vector.e:55:		require
+/d/prod/simple_optimization/src/gradient_vector.e:82:		ensure
+/d/prod/simple_optimization/src/gradient_vector.e:87:invariant
+/d/prod/simple_optimization/src/line_search.e:14:		require
+/d/prod/simple_optimization/src/line_search.e:28:		ensure
+/d/prod/simple_optimization/src/nelder_mead_solver.e:27:		ensure
+/d/prod/simple_optimization/src/nelder_mead_solver.e:35:		ensure
+/d/prod/simple_optimization/src/nelder_mead_solver.e:43:		ensure
+/d/prod/simple_optimization/src/nelder_mead_solver.e:51:		ensure
+/d/prod/simple_optimization/src/nelder_mead_solver.e:59:		ensure
+/d/prod/simple_optimization/src/nelder_mead_solver.e:68:		require
+/d/prod/simple_optimization/src/nelder_mead_solver.e:78:		ensure
+/d/prod/simple_optimization/src/optimization_history.e:18:		ensure
+/d/prod/simple_optimization/src/optimization_history.e:35:		require
+/d/prod/simple_optimization/src/optimization_history.e:40:		ensure
+/d/prod/simple_optimization/src/optimization_history.e:44:invariant
+/d/prod/simple_optimization/src/optimization_result.e:18:		require
+/d/prod/simple_optimization/src/optimization_result.e:36:		ensure
+/d/prod/simple_optimization/src/optimization_result.e:77:		ensure
+/d/prod/simple_optimization/src/optimization_result.e:84:invariant
+/d/prod/simple_optimization/src/simple_optimization.e:16:		ensure
+/d/prod/simple_optimization/src/simple_optimization.e:26:		ensure
+/d/prod/simple_optimization/src/simple_optimization.e:34:		ensure
+/d/prod/simple_optimization/src/simplex.e:15:		require
+/d/prod/simple_optimization/src/simplex.e:23:		ensure
+/d/prod/simple_optimization/src/simplex.e:125:invariant

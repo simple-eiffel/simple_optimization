@@ -1,0 +1,153 @@
+# Phase 3 Task Evidence
+# Project: d:\prod\simple_optimization
+# Date: 2026-01-29
+
+Tasks created: 10
+Task groups: 3 (foundation, utilities, solvers)
+Dependencies identified: 14+ (between tasks)
+Human approved: YES (2026-01-29)
+
+## Task Breakdown
+
+### Foundation Classes (4 tasks - parallel)
+1. GRADIENT_VECTOR - Gradient representation (magnitude, dot_product, scale)
+2. SIMPLEX - Nelder-Mead vertex management (reflect, expand, contract, shrink)
+3. OPTIMIZATION_RESULT - Results data (immutable, SCOOP-safe)
+4. OPTIMIZATION_HISTORY - Optional iteration tracking
+
+### Utility Classes (2 tasks - parallel)
+5. LINE_SEARCH - Armijo backtracking (sufficient decrease condition)
+6. CONVERGENCE_CHECKER - Stopping criterion detection
+
+### Entry Point (1 task - depends on Tasks 2-3)
+7. SIMPLE_OPTIMIZATION - Facade entry point (solver factories)
+
+### Solver Classes (2 tasks - parallel after utilities)
+8. NELDER_MEAD_SOLVER - Simplex method (reflection, expansion, contraction, shrinkage)
+9. GRADIENT_DESCENT_SOLVER - Steepest descent (numerical/analytical gradients, line search)
+
+### Integration (1 task - final)
+10. ECF Configuration & Tests - Compilation and skeletal tests
+
+## Execution Strategy
+
+Recommended order: (1,2,3,4 parallel) → (5,6 parallel) → 7 → (8,9 parallel) → 10
+
+Critical path:
+GRADIENT_VECTOR → GRADIENT_DESCENT_SOLVER → ECF
+
+Parallel opportunities:
+- Tasks 1-4 (all foundation): independent, can all start immediately
+- Tasks 5-6 (utilities): independent, can start after Tasks 1-4
+- Tasks 8-9 (solvers): can start after Tasks 1-7, independent of each other
+
+## Acceptance Criteria Per Task
+
+Each task includes:
+✓ Acceptance criteria (specific, measurable)
+✓ Implementation notes (algorithms, parameters)
+✓ Dependencies (which tasks must complete first)
+✓ Test strategy (test functions)
+
+Example (Task 8: NELDER_MEAD_SOLVER):
+- Simplex method with n+1 vertices in n dimensions
+- Operations: reflect (α=1), expand (γ=2), contract (ρ=0.5), shrink (σ=0.5)
+- Convergence: simplex diameter < tol AND |f_max - f_min| < rel_tol * |f_min|
+- Test: Rosenbrock function, sphere function, Rastrigin (multimodal)
+
+## Contract Completeness
+
+Every task includes:
+✓ Preconditions (input validation, bounds checking)
+✓ Postconditions (output correctness, monotone decrease for gradient descent)
+✓ Invariants (dimension preservation, bounds enforcement)
+✓ Frame conditions (what doesn't change)
+
+## Phase 4 Integration Gate
+
+Before implementation begins, verify:
+- [ ] simple_math provides sqrt, exp
+- [ ] ISE base library version ≥ 25.02
+- [ ] void_safety="all" configuration supported
+- [ ] SCOOP concurrency enabled
+- [ ] EiffelStudio compiler ready
+
+## Risk Areas Identified
+
+1. **Armijo Line Search (Task 5):**
+   - Parameter c=1e-4 must be tuned correctly
+   - Mitigation: Test on well-conditioned and ill-conditioned problems
+
+2. **Nelder-Mead Simplex (Task 8):**
+   - Reflection/expansion/contraction parameters critical
+   - Simplex orientation handling on degenerate cases
+   - Mitigation: Extensive testing, reference implementation comparison
+
+3. **Gradient Computation (Task 9):**
+   - Numerical gradient via central differences requires careful tuning
+   - Finite difference step size (eps) is crucial
+   - Mitigation: Support analytical gradients as alternative
+
+4. **Bounds Enforcement:**
+   - Projecting points back to bounds must preserve convergence
+   - Mitigation: Clear bounds handling in both solvers
+
+## Success Factors
+
+1. Correct Armijo condition implementation
+2. Proper Nelder-Mead vertex operations
+3. Accurate finite difference gradients (central differences)
+4. Robust convergence detection
+5. Proper bounds projection
+
+## Solver Comparison
+
+| Solver | Best For | Convergence | Gradient |
+|--------|----------|-------------|----------|
+| Nelder-Mead | Noisy, non-smooth | Slow | Not needed |
+| Gradient Descent | Smooth, large-scale | Medium-fast | Needed |
+
+## Dependencies Summary
+
+Total edges in dependency graph: 14+
+
+Most connected: OPTIMIZATION_RESULT (used by both solvers)
+Least connected: SIMPLE_OPTIMIZATION (just dispatches to solvers)
+
+No circular dependencies identified.
+
+## Algorithm Notes
+
+### Nelder-Mead Simplex (Task 8)
+- Reflection: x_reflect = x_centroid + 1.0*(x_centroid - x_worst)
+- Expansion: x_expand = x_centroid + 2.0*(x_reflect - x_centroid)
+- Contraction: x_contract = x_centroid + 0.5*(x_worst - x_centroid)
+- Shrinkage: x_shrink[i] = x_best + 0.5*(x[i] - x_best)
+- Convergence: diameter < tol AND |f_max - f_min| / |f_min| < rel_tol
+
+### Gradient Descent (Task 9)
+- Direction: d = -∇f (steepest descent)
+- Line search: Armijo backtracking to find step size α
+- Update: x = x + α*d
+- Bounds: Project x back to [x_min, x_max] if violated
+- Convergence: ||∇f|| < tol OR iterations >= max_iter
+
+### Numerical Gradient (Task 9)
+- Central difference: ∂f/∂xi ≈ [f(x + eps*e_i) - f(x - eps*e_i)] / (2*eps)
+- Step size: eps ~ 1e-5 for REAL_64 (sqrt of machine epsilon)
+- Cost: 2*n function evaluations per gradient
+- Accuracy: O(eps²) truncation error + O(machine_eps/eps) rounding error
+
+## File Locations
+
+Tasks file: d:\prod\simple_optimization\.eiffel-workflow\tasks.md
+Evidence: d:\prod\simple_optimization\.eiffel-workflow\evidence\phase3-tasks.txt
+Specifications: d:\prod\simple_optimization\.eiffel-workflow\spec\01-08 (*.md)
+
+## Status
+
+Phase 3: TASKS DEFINED
+Phase 4: AWAITING HUMAN APPROVAL
+
+Total implementation effort estimate: MEDIUM (standard algorithms)
+Recommended parallelization: All foundation tasks parallel, solvers parallel after utilities

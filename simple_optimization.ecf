@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system name="simple_optimization" uuid="13579246-2468-1357-2468-135792461357">
+	<target name="simple_optimization">
+		<description>Optimization library with Nelder-Mead and gradient descent solvers</description>
+		<root class="SIMPLE_OPTIMIZATION" feature="make"/>
+		<option warning="true" void_safety="all">
+			<assertions precondition="true" postcondition="true" invariant="true" check="true"/>
+			<concurrency support="scoop"/>
+		</option>
+		<capability>
+			<concurrency support="scoop"/>
+			<void_safety support="all"/>
+		</capability>
+		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
+		<library name="testing" location="$ISE_LIBRARY/library/testing/testing.ecf"/>
+		<library name="simple_math" location="d:\prod\simple_math\simple_math.ecf"/>
+		<library name="simple_mml" location="d:\prod\simple_mml\simple_mml.ecf"/>
+		<cluster name="src" location=".\src\" recursive="true"/>
+	</target>
+	<target name="simple_optimization_tests">
+		<description>Test suite for optimization library</description>
+		<root class="TEST_APP" feature="make"/>
+		<option warning="true" void_safety="all">
+			<assertions precondition="true" postcondition="true" invariant="true" check="true"/>
+			<concurrency support="scoop"/>
+		</option>
+		<capability>
+			<concurrency support="scoop"/>
+			<void_safety support="all"/>
+		</capability>
+		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
+		<library name="testing" location="$ISE_LIBRARY/library/testing/testing.ecf"/>
+		<library name="simple_math" location="d:\prod\simple_math\simple_math.ecf"/>
+		<library name="simple_mml" location="d:\prod\simple_mml\simple_mml.ecf"/>
+		<cluster name="src" location=".\src\" recursive="true"/>
+		<cluster name="test" location=".\test\" recursive="true"/>
+	</target>
+</system>

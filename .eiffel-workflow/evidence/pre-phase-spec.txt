@@ -1,0 +1,175 @@
+# Pre-Phase Specification Evidence
+# Project: d:\prod\simple_optimization
+# Date: 2026-01-29
+
+Specification completed: YES
+Steps completed: 8/8
+
+## Documents Created
+- 01-PARSED-REQUIREMENTS.md (parsed from research, 14 FR + 8 NFR)
+- 02-DOMAIN-MODEL.md (7 domain concepts, solver comparison, algorithms)
+- 03-CHALLENGED-ASSUMPTIONS.md (7 assumptions challenged, scope refined)
+- 04-CLASS-DESIGN.md (9 classes designed with OOSC2 principles)
+- 05-CONTRACT-DESIGN.md (full contracts for solvers, gradients, convergence)
+- 06-INTERFACE-DESIGN.md (fluent API, builder pattern, examples)
+- 07-SPECIFICATION.md (formal Eiffel class skeletons)
+- 08-VALIDATION.md (OOSC2 compliance, requirements traceability, risk mitigations)
+
+## Classes Designed
+1. SIMPLE_OPTIMIZATION (facade with solver factories)
+2. NELDER_MEAD_SOLVER (simplex method engine)
+3. GRADIENT_DESCENT_SOLVER (steepest descent engine)
+4. SIMPLEX (n+1 vertex management)
+5. GRADIENT_VECTOR (gradient data)
+6. LINE_SEARCH (Armijo backtracking)
+7. CONVERGENCE_CHECKER (convergence detection)
+8. OPTIMIZATION_RESULT (immutable results)
+9. OPTIMIZATION_HISTORY (optional tracking)
+
+## Contracts Defined
+- NELDER_MEAD_SOLVER: 6 features
+- GRADIENT_DESCENT_SOLVER: 7 features
+- LINE_SEARCH: 2 features
+- OPTIMIZATION_RESULT: 10 features + invariant
+
+Total: 25+ features, all contracted
+
+## Requirements Traced
+Functional Requirements: 14/14 mapped
+- FR-001: Univariate minimization (DEFERRED Phase 2)
+- FR-002: NELDER_MEAD_SOLVER.minimize
+- FR-003: GRADIENT_DESCENT_SOLVER.minimize
+- FR-004: f(x) callback function
+- FR-005: Numerical gradient (finite differences)
+- FR-006: set_gradient_function (analytical)
+- FR-007: set_absolute_tolerance, set_relative_tolerance
+- FR-008: set_max_iterations
+- FR-009: OPTIMIZATION_RESULT (x_min, f_min, iterations)
+- FR-010: LINE_SEARCH Armijo backtracking
+- FR-011: set_lower_bound, set_upper_bound
+- FR-012: Global search / multi-start (DEFERRED Phase 2)
+- FR-013: Simulated annealing (DEFERRED Phase 2)
+- FR-014: General constraints (DEFERRED Phase 2)
+
+Non-Functional Requirements: 8/8 mapped
+- NFR-001: Convergence speed depends on problem
+- NFR-002: Target 50+ dimensional systems
+- NFR-003: Type-safe API with full contracts
+- NFR-004: SCOOP-compatible (immutable results)
+- NFR-005: Only simple_math dependency
+- NFR-006, 007: Contract coverage 100%
+- NFR-008: 35+ tests planned
+
+## Assumptions Challenged & Resolved
+7 assumptions questioned:
+- Nelder-Mead without global? YES, local only Phase 1
+- Numerical gradients sufficient? YES, analytical optional
+- Bounds only? YES, general constraints Phase 2
+- Armijo backtracking best? YES, upgrade to Wolfe Phase 2
+- Separate solver classes? YES, per-solver tuning
+- simple_math complete? VALIDATION GATE required
+- Scaling needed? NO Phase 1, YES Phase 2
+
+## Phase 1 Scope (MVP) Final
+**Included:**
+- Nelder-Mead simplex method (n+1 vertices)
+- Gradient descent with Armijo line search
+- Numerical gradient (central differences, eps ~ 1e-5)
+- Analytical gradient (optional user-provided)
+- Variable bounds (box constraints via projection)
+- Convergence tolerance (absolute + relative + gradient norm)
+- Maximum iteration and function evaluation limits
+- Iteration history tracking (optional)
+- Statistics (iterations, function evals)
+- Separate solver classes (NELDER_MEAD_SOLVER, GRADIENT_DESCENT_SOLVER)
+
+**Deferred to Phase 2:**
+- Univariate minimization (golden section, Brent)
+- Global search / multi-start optimization
+- Simulated annealing
+- Quasi-Newton (BFGS)
+- General constrained optimization (SQP, penalties)
+- Scale-invariant metrics
+- Second-order methods (Newton)
+
+## Design Decisions Finalized
+- Architecture: Facade pattern → Separate solver classes
+- Data: Immutable OPTIMIZATION_RESULT (SCOOP-safe)
+- Gradients: Numerical (default) + analytical (optional)
+- Line search: Armijo backtracking with step halving
+- Bounds: Box constraints only (general Phase 2)
+- Convergence: Multiple criteria (tol, gradient norm, iterations)
+- Callbacks: Agent-based for f(x) and ∇f(x)
+
+## OOSC2 Compliance
+✓ Single Responsibility: Each solver one algorithm
+✓ Open/Closed: Add solvers (BFGS, SA) without modification
+✓ Liskov Substitution: OPTIMIZER base class pattern
+✓ Interface Segregation: Focused solver interfaces
+✓ Dependency Inversion: Depends on callbacks, not internals
+
+## Eiffel Excellence
+✓ Command-Query Separation: set_tolerance vs x_minimum
+✓ Uniform Access: x_minimum could be attribute/function
+✓ Design by Contract: 100% of public features
+✓ Genericity: Extensible to different numeric types
+✓ Inheritance: OPTIMIZER base class
+✓ Information Hiding: Simplex, line search internals hidden
+
+## Practical Quality
+✓ Void-safe: All arrays initialized
+✓ SCOOP-compatible: Immutable results + independent solvers
+✓ simple_* first: Only simple_math dependency
+✓ MML postconditions: Frame conditions on bounds, dimension
+✓ Testable: Contracts enable verification
+
+## Risk Mitigations Designed
+- Local minima: Clear MVP scope; Phase 2 global search
+- Ill-conditioning: User scaling; Phase 2 adds preconditioning
+- Numerical gradient inaccuracy: Tunable eps; analytical available
+- Users expect constraints: Clear roadmap; Phase 2 support
+- High dimensions: Recommend < 100 variables; gradient scales linearly
+
+## Integration Dependencies
+- simple_math: sqrt for gradient norm, exp for line search
+- ISE base: ARRAY [REAL_64], LIST
+- ISE testing: EQA_TEST_SET
+
+## Testing Strategy
+- Unit: Gradient computation (numerical vs analytical)
+- Integration: Convergence on test functions
+- Local minimum: Quadratic, sphere, Rosenbrock functions
+- Bounds: Verify constraint enforcement
+- Ill-conditioning: Monitor convergence
+- Edge cases: Dimension=1, bounds collapse, max_iterations
+
+## Performance Targets (Phase 1)
+- Dimension: up to 50+ variables
+- Gradient evals: N per iteration (N = dimension)
+- Function evals: minimize via efficient line search
+- Convergence: Reasonable iterations for smooth problems
+- Parallelism: SCOOP multi-start (Phase 2)
+
+## Solver Comparison (Phase 1)
+
+| Method | Best For | Convergence | Gradient |
+|--------|----------|-------------|----------|
+| Nelder-Mead | Noisy, non-smooth | Slow-medium | Not needed |
+| Gradient Descent | Smooth, large-scale | Medium-fast | Needed (num or ana) |
+
+## Ready for Implementation?
+VERDICT: YES - READY FOR PHASE 4 (Implementation)
+
+All requirements traced, risks identified and mitigated, contracts complete and precise, architecture sound (OOSC2 + Eiffel excellence), MVP scope realistic.
+
+Key Validation:
+- Nelder-Mead simplex (reflection, expand, contract, shrink)
+- Gradient descent (steepest descent, Armijo line search)
+- Numerical gradient (central differences)
+- Analytical gradient (optional user-provided)
+- Bounds enforcement (box constraints)
+- Multiple convergence criteria
+
+Status: SPECIFICATION_COMPLETE
+Phase 1 targets: Local optimization, parameter fitting, 50+ variables
+Phase 2 roadmap: Global search, constraints, quasi-Newton, univariate
