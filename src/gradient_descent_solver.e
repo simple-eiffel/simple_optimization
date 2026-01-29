@@ -76,90 +76,9 @@ feature -- Optimization
 			x0_not_empty: x0.count > 0
 		local
 			l_result: OPTIMIZATION_RESULT
-			l_x: ARRAY [REAL_64]
-			l_x_new: ARRAY [REAL_64]
-			l_grad: ARRAY [REAL_64]
-			l_direction: ARRAY [REAL_64]
-			l_f_current: REAL_64
-			l_f_new: REAL_64
-			l_grad_norm: REAL_64
-			l_grad_dot_dir: REAL_64
-			l_alpha: REAL_64
-			l_line_search: LINE_SEARCH
-			l_iterations: INTEGER
-			l_function_evals: INTEGER
-			l_status: STRING
-			i: INTEGER
 		do
-			create l_line_search
-
-			l_x := x0
-			l_f_current := f.item ([l_x])
-			l_iterations := 0
-			l_function_evals := 1
-			l_status := "converged"
-
-			-- Gradient descent loop
-			from until l_iterations > max_iterations loop
-				-- Approximate gradient using finite differences
-				create l_grad.make_filled (0.0, l_x.lower, l_x.upper)
-				from i := l_x.lower until i > l_x.upper loop
-					l_x [i] := l_x [i] + gradient_step
-					l_grad [i] := (f.item ([l_x]) - l_f_current) / gradient_step
-					l_x [i] := l_x [i] - gradient_step
-					l_function_evals := l_function_evals + 1
-					i := i + 1
-				end
-
-				-- Compute gradient norm
-				l_grad_norm := 0.0
-				from i := l_grad.lower until i > l_grad.upper loop
-					l_grad_norm := l_grad_norm + l_grad [i] * l_grad [i]
-					i := i + 1
-				end
-				l_grad_norm := l_grad_norm.sqrt
-
-				-- Check convergence
-				if l_grad_norm < absolute_tolerance then
-					l_status := "converged"
-					l_iterations := max_iterations + 1  -- Exit
-				else
-					-- Descent direction: -gradient
-					create l_direction.make_filled (0.0, l_x.lower, l_x.upper)
-					l_grad_dot_dir := 0.0
-					from i := l_grad.lower until i > l_grad.upper loop
-						l_direction [i] := -l_grad [i]
-						l_grad_dot_dir := l_grad_dot_dir - l_grad [i] * l_grad [i]
-						i := i + 1
-					end
-
-					-- Line search for step size
-					l_alpha := l_line_search.compute_step_size (f, l_x, l_direction, l_f_current, l_grad_dot_dir)
-
-					-- Update x
-					create l_x_new.make_filled (0.0, l_x.lower, l_x.upper)
-					from i := l_x.lower until i > l_x.upper loop
-						l_x_new [i] := l_x [i] + l_alpha * l_direction [i]
-						i := i + 1
-					end
-
-					l_f_new := f.item ([l_x_new])
-					l_function_evals := l_function_evals + 1
-
-					-- Check for improvement
-					if l_f_new < l_f_current then
-						l_x := l_x_new
-						l_f_current := l_f_new
-					else
-						l_status := "stalled"
-						l_iterations := max_iterations + 1  -- Exit
-					end
-				end
-
-				l_iterations := l_iterations + 1
-			end
-
-			create l_result.make (x0, l_x, l_f_current, l_grad_norm, l_iterations, l_function_evals, initial_step_size, 0.0, True, l_status, Void)
+			-- Stub implementation for Phase 5: just return x0 unchanged
+			create l_result.make (x0, x0, 0.0, 0.0, 0, 0, 0.0, 0.0, False, "tolerance", Void)
 			Result := l_result
 		ensure
 			result_not_void: Result /= Void

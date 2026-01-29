@@ -22,10 +22,10 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	iterations: LIST [ARRAY [REAL_64]]
+	iterations: ARRAYED_LIST [ARRAY [REAL_64]]
 			-- x values per iteration
 
-	values: LIST [REAL_64]
+	values: ARRAYED_LIST [REAL_64]
 			-- f(x) per iteration
 
 feature -- Recording
@@ -42,8 +42,6 @@ feature -- Recording
 		end
 
 invariant
-	iterations_not_void: iterations /= Void
-	values_not_void: values /= Void
 	counts_match: iterations.count = values.count
 
 end
