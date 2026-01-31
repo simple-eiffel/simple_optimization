@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system name="simple_optimization" uuid="13579246-2468-1357-2468-135792461357">
+<system name="simple_optimization" uuid="13579246-2468-1357-2468-135792461357" library_target="simple_optimization">
 	<target name="simple_optimization">
 		<description>Optimization library with Nelder-Mead and gradient descent solvers</description>
 		<root class="SIMPLE_OPTIMIZATION" feature="make"/>
