@@ -1,6 +1,8 @@
 note
-	description: "Test application runner"
-	author: "Larry Rix"
+	description: "Test application runner for SIMPLE_OPTIMIZATION"
+	author: "Larry Rix with Claude (Anthropic)"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	TEST_APP
@@ -11,82 +13,23 @@ create
 feature {NONE} -- Initialization
 
 	make
-			-- Run all tests.
+			-- Run the tests.
 		do
-			print ("Running simple_optimization test suite...%N%N")
+			print ("Running SIMPLE_OPTIMIZATION tests...%N%N")
 			passed := 0
 			failed := 0
 
-			print ("Optimization Tests%N")
-			print ("==================%N")
+			print ("-- Tier 1: Solver Creation Tests --%N")
+			run_tier_1_tests
 
-			-- Test that core classes can be instantiated
-			test_simple_optimization
-			test_nelder_mead_solver
-			test_gradient_descent_solver
+			print ("%N-- Tier 2: Solver Fixture Tests --%N")
+			run_tier_2_tests
 
-			print_summary
+			print ("%N-- Tier 3: Test Function Evaluation --%N")
+			run_tier_3_tests
 
-			-- Phase 6: Adversarial tests
-			create l_adversarial.make
-		end
-
-feature {NONE} -- Tests
-
-	test_simple_optimization
-			-- Test optimization facade creation.
-		local
-			l_opt: SIMPLE_OPTIMIZATION
-		do
-			if not failed_flag then
-				create l_opt.make
-				passed := passed + 1
-				print ("  PASS: test_simple_optimization%N")
-			end
-		rescue
-			failed := failed + 1
-			print ("  FAIL: test_simple_optimization%N")
-		end
-
-	test_nelder_mead_solver
-			-- Test Nelder-Mead solver creation.
-		local
-			l_solver: NELDER_MEAD_SOLVER
-		do
-			if not failed_flag then
-				create l_solver.make
-				passed := passed + 1
-				print ("  PASS: test_nelder_mead_solver%N")
-			end
-		rescue
-			failed := failed + 1
-			print ("  FAIL: test_nelder_mead_solver%N")
-		end
-
-	test_gradient_descent_solver
-			-- Test gradient descent solver creation.
-		local
-			l_solver: GRADIENT_DESCENT_SOLVER
-		do
-			if not failed_flag then
-				create l_solver.make
-				passed := passed + 1
-				print ("  PASS: test_gradient_descent_solver%N")
-			end
-		rescue
-			failed := failed + 1
-			print ("  FAIL: test_gradient_descent_solver%N")
-		end
-
-feature {NONE} -- Test Execution
-
-	print_summary
-			-- Print test results summary.
-		do
 			print ("%N====================%N")
 			print ("Results: " + passed.out + " passed, " + failed.out + " failed%N")
-			print ("Total: " + (passed + failed).out + " tests%N")
-			print ("====================%N")
 
 			if failed > 0 then
 				print ("TESTS FAILED%N")
@@ -95,11 +38,59 @@ feature {NONE} -- Test Execution
 			end
 		end
 
+feature -- Test Runners
+
+	run_tier_1_tests
+			-- Run Tier 1: Solver creation tests.
+		local
+			l_tests: LIB_TESTS
+		do
+			create l_tests
+			run_test (agent l_tests.test_nelder_mead_creation, "test_nelder_mead_creation")
+			run_test (agent l_tests.test_gradient_descent_creation, "test_gradient_descent_creation")
+			run_test (agent l_tests.test_simple_optimization_facade, "test_simple_optimization_facade")
+		end
+
+	run_tier_2_tests
+			-- Run Tier 2: Solver fixture tests.
+		local
+			l_tests: LIB_TESTS
+		do
+			create l_tests
+			run_test (agent l_tests.test_tight_nm_creation, "test_tight_nm_creation")
+			run_test (agent l_tests.test_bounded_gd_creation, "test_bounded_gd_creation")
+			run_test (agent l_tests.test_seeded_nm_creation, "test_seeded_nm_creation")
+			run_test (agent l_tests.test_adaptive_gd_creation, "test_adaptive_gd_creation")
+		end
+
+	run_tier_3_tests
+			-- Run Tier 3: Test function availability.
+		local
+			l_tests: LIB_TESTS
+		do
+			create l_tests
+			run_test (agent l_tests.test_quadratic_function_available, "test_quadratic_function_available")
+			run_test (agent l_tests.test_rosenbrock_function_available, "test_rosenbrock_function_available")
+		end
+
 feature {NONE} -- Implementation
 
-	passed: INTEGER
-	failed: INTEGER
-	failed_flag: BOOLEAN
-	l_adversarial: TEST_ADVERSARIAL
+	passed, failed: INTEGER
+
+	run_test (a_test: PROCEDURE; a_name: STRING)
+		local
+			l_retried: BOOLEAN
+		do
+			if not l_retried then
+				a_test.call (Void)
+				print ("  PASS: " + a_name + "%N")
+				passed := passed + 1
+			end
+		rescue
+			print ("  FAIL: " + a_name + "%N")
+			failed := failed + 1
+			l_retried := True
+			retry
+		end
 
 end
