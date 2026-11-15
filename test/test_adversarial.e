@@ -6,7 +6,8 @@ class
 	TEST_ADVERSARIAL
 
 create
-	make
+	make,
+	default_create
 
 feature -- Adversarial Tests
 

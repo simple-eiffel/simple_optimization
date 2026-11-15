@@ -28,6 +28,9 @@ feature {NONE} -- Initialization
 			print ("%N-- Tier 3: Test Function Evaluation --%N")
 			run_tier_3_tests
 
+			print ("%N-- Tier 4: Adversarial and SCOOP Tests (port-coordination #17: these ran in no gate) --%N")
+			run_tier_4_tests
+
 			print ("%N====================%N")
 			print ("Results: " + passed.out + " passed, " + failed.out + " failed%N")
 
@@ -61,6 +64,24 @@ feature -- Test Runners
 			run_test (agent l_tests.test_bounded_gd_creation, "test_bounded_gd_creation")
 			run_test (agent l_tests.test_seeded_nm_creation, "test_seeded_nm_creation")
 			run_test (agent l_tests.test_adaptive_gd_creation, "test_adaptive_gd_creation")
+		end
+
+	run_tier_4_tests
+			-- Run Tier 4: TEST_ADVERSARIAL's edge cases and TEST_SCOOP_CONSUMER's SCOOP check.
+		local
+			l_adversarial: TEST_ADVERSARIAL
+			l_scoop: TEST_SCOOP_CONSUMER
+		do
+			create l_adversarial
+			run_test (agent l_adversarial.test_1d_optimization, "test_1d_optimization")
+			run_test (agent l_adversarial.test_high_dimension_optimization, "test_high_dimension_optimization")
+			run_test (agent l_adversarial.test_zero_starting_point, "test_zero_starting_point")
+			run_test (agent l_adversarial.test_negative_values, "test_negative_values")
+			run_test (agent l_adversarial.test_tight_tolerances, "test_tight_tolerances")
+			run_test (agent l_adversarial.test_many_iterations, "test_many_iterations")
+			run_test (agent l_adversarial.test_config_persistence, "test_config_persistence")
+			create l_scoop
+			run_test (agent l_scoop.test_scoop_compatibility, "test_scoop_compatibility")
 		end
 
 	run_tier_3_tests
